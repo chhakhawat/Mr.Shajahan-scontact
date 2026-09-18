@@ -1,0 +1,30 @@
+name: Build APK
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Extract project zip
+        run: |
+          set -e
+          echo "== Files in repo =="
+          ls -la
+          for z in *.zip; do
+            if [ -f "$z" ]; then
+              echo "Extracting $z ..."
+              unzip -o "$z"
+            fi
+          done
+          PROJECT_DIR=$(find . -name "settings.gradle.kts" -not -path "*/.*" | head -1 | xargs dirname)
+          if [ -z "$PROJECT_DIR" ]; then
+            echo "ERROR: settings.gradle.kts not found"
+            find . -type f | head -50
+            exit 1
+          fi
+          echo "PROJECT_DIR=$PROJECT_DIR"
+          if [ "$PROJECT_DIR" != "."
