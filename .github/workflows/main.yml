@@ -12,12 +12,10 @@ jobs:
       - name: Extract zip
         run: |
           ls -la
-          unzip -o "*.zip"
-          ls -la
+          unzip -o "*.zip" || true
           if [ -d ShajahanContact ]; then
             cp -a ShajahanContact/. .
           fi
-          ls -la
           test -f settings.gradle.kts
 
       - uses: actions/setup-java@v4
@@ -25,7 +23,10 @@ jobs:
           java-version: "17"
           distribution: "temurin"
 
-      - uses: android-actions/setup-android@v3
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+        with:
+          packages: platform-tools platforms;android-34 build-tools;34.0.0
 
       - uses: gradle/actions/setup-gradle@v3
 
